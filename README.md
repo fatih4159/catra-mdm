@@ -1,9 +1,9 @@
 CATRA-MDM
 ==============================================
-[C]ontrol
-[A]nd
-[T]elemetrics
-[R]eading
+[C]ontrol\
+[A]nd\
+[T]elemetrics\
+[R]eading\
 [A]pp
 ----------------------------------------------
 
