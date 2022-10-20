@@ -1,6 +1,10 @@
 CATRA-MDM
 ==============================================
-[C]ontroll [A]nd [T]elemetrics [R]eading [A]pp
+[C]ontrol
+[A]nd
+[T]elemetrics
+[R]eading
+[A]pp
 ----------------------------------------------
 
 [✓] Gain Device Admin Rights
