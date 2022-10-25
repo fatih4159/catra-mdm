@@ -9,8 +9,6 @@ public class Constants {
     public static final String APPLICATION_ID = "com.agx.catra";
     public static final String TAG = "CATRA";
 
-    public static final String RUN_DPM_DIALOG_TEXT ="I NEED YOU TO PUSH OK !";
-
     public static final int RC_GET_DEVICE_ADMIN = 1;
     public static final int SET_PASSWORD = 2;
 

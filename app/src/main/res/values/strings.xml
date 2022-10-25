@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">Device Admin</string>
+    <string name="app_name">Catra</string>
     <string name="app_log_fileName">DeviceAdminLogs.txt</string>
     <string name="request_explanation">Some long explanation</string>
     <string name="action_bar_subtitle">Select which apps are allowed to activate kiosk mode</string>
     <string name="grant_admin">This app must be a device administrator before it can become the device owner.</string>
-    <string name="run_dpm">Run this command to make this app the device owner:\n{COMMAND}</string>
     <string name="dpm_success">OK, dpm reported success</string>
     <string name="quit">Quit</string>
     <string name="error_account_exists">This app cannot become the device owner because a user account exists.</string>
