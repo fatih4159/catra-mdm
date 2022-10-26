@@ -4,7 +4,6 @@ package com.agx.catra.workers;
 import static com.agx.catra.MainActivity.getDevicePolicyManager;
 import static com.agx.catra.control.AdminControlService.getComponentName;
 
-
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.util.Log;
@@ -16,18 +15,17 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.agx.catra.MainActivity;
 import com.agx.catra.common.Constants;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class OwnPermissionsWorker extends Worker {
+public class ExternalPermissionsWorker extends Worker {
 
     public static void start(Context context){
 
         WorkManager
                 .getInstance(context)
-                .enqueue(new OneTimeWorkRequest.Builder(OwnPermissionsWorker.class).build());
+                .enqueue(new OneTimeWorkRequest.Builder(ExternalPermissionsWorker.class).build());
     }
     private static final String TAG = "OwnPermissionsWorker";
 
@@ -37,7 +35,7 @@ public class OwnPermissionsWorker extends Worker {
     public static final String KEY_TOTAL_DENIED = "OPW_TOTAL_DENIED";
 
 
-    public OwnPermissionsWorker(
+    public ExternalPermissionsWorker(
             @NonNull Context context,
             @NonNull WorkerParameters params) {
         super(context, params);

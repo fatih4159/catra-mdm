@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.agx.catra.MainActivity;
 import com.agx.catra.R;
 
 
@@ -25,7 +26,7 @@ public class RunDpmDialog extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
 		setCancelable(false);
-		String name = ApplicationAdminReceiver.class.getName();
+		String name = AdminReceiver.class.getName();
 		if(name.startsWith(APPLICATION_ID)) {
 			name = name.substring(APPLICATION_ID.length());
 		}
@@ -49,7 +50,8 @@ public class RunDpmDialog extends DialogFragment {
 				.setNegativeButton(R.string.quit, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(final DialogInterface dialogInterface, final int i) {
-						getActivity().finish();
+						MainActivity.getActivity().finishAndRemoveTask();
+
 					}
 				})
 				.create();

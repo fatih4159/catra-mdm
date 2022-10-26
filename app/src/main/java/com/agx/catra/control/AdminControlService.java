@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GainControlService extends Service {
-	private static final String TAG = "GainControlService";
+public class AdminControlService extends Service {
+	private static final String TAG = "AdminControlService";
 	private final List<PackageInfo> mInstalledPackages = new ArrayList<>();
 	// we have to maintain this set because DPM has no methods to add or remove lockable packages individually
 	private final Set<String> mLockablePackages = new HashSet<>();
@@ -44,7 +44,7 @@ public class GainControlService extends Service {
 		super.onCreate();
 		//noinspection ConstantConditions - we have an action bar
 		mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-		mAdminComponent = new ComponentName(this, ApplicationAdminReceiver.class);
+		mAdminComponent = new ComponentName(this, AdminReceiver.class);
 		checkDeviceOwnership();
 	}
 
@@ -57,19 +57,6 @@ public class GainControlService extends Service {
 		}
 	};
 
-	private void populatePackageLists() {
-		mInstalledPackages.clear();
-		mLockablePackages.clear();
-		for(PackageInfo pkg : getPackageManager().getInstalledPackages(0)) {
-			if((pkg.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-				mInstalledPackages.add(pkg);
-			}
-			if(mDpm.isLockTaskPermitted(pkg.packageName)) {
-				mLockablePackages.add(pkg.packageName);
-			}
-		}
-		Collections.sort(mInstalledPackages, gPackageComparator);
-	}
 
 	public static void checkDeviceOwnership() {
 		// find out if we are the device owner
@@ -90,6 +77,9 @@ public class GainControlService extends Service {
 					final Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 					intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminComponent);
 					intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getContext().getString(R.string.grant_admin));
+					intent.putExtra(DevicePolicyManager.ACTION_DEVICE_OWNER_CHANGED,mAdminComponent);
+					intent.putExtra(DevicePolicyManager.ACTION_DEVICE_OWNER_CHANGED,mAdminComponent);
+
 					getActivity().startActivity(intent);
 				}
 			}
@@ -100,6 +90,7 @@ public class GainControlService extends Service {
 				AccountExistsDialog.show(getActivity());
 			}
 		}
+
 	}
 
 	@Nullable
@@ -108,43 +99,7 @@ public class GainControlService extends Service {
 		return null;
 	}
 
-	public static void SelfGrantPermissions(Context context) {
-		Log.d(TAG, "SelfGrantPermissions has been launched");
-		final DevicePolicyManager devicePolicyManager =
-				(DevicePolicyManager) getActivity().getSystemService(Context.DEVICE_POLICY_SERVICE);
-
-		AtomicInteger totalGranted = new AtomicInteger();
-		AtomicInteger totalDenied = new AtomicInteger();
-		int totalPermissions = Constants.USED_PERMISSIONS.size();
-
-		Constants.USED_PERMISSIONS.forEach(v ->{
-			boolean isGranted = false;
-			Log.d(TAG, "SelfGrantPermissions: granting permission ="+v);
-			try{
-				isGranted = devicePolicyManager.setPermissionGrantState(getComponentName(context), context.getPackageName(), v, DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED);
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-
-			if(isGranted) {
-				Log.d(TAG, "SelfGrantPermissions: permission granted ="+v);
-				totalGranted.getAndIncrement();
-			}
-			else {
-				Log.e(TAG, "SelfGrantPermissions: permission denied ="+v);
-				totalDenied.getAndIncrement();
-			}
-
-
-
-		});
-		Log.e(TAG, "SelfGrantPermissions: Total/Granted/Denied="+totalPermissions+"/"+totalGranted+"/"+totalDenied);
-
-//        devicePolicyManager.setPermissionGrantState(getComponentName(context), context.getPackageName(), "android.permission.WRITE_EXTERNAL_STORAGE", DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED);
-//        devicePolicyManager.setPermissionGrantState(getComponentName(context), context.getPackageName(), "android.permission.READ_EXTERNAL_STORAGE", DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED);
-//        devicePolicyManager.setPermissionGrantState(getComponentName(context), context.getPackageName(), "android.permission.ACCESS_FINE_LOCATION", DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED);
-	}
 	public static ComponentName getComponentName(Context context) {
-		return new ComponentName(context.getApplicationContext(), ApplicationAdminReceiver.class);
+		return new ComponentName(context.getApplicationContext(), AdminReceiver.class);
 	}
 }

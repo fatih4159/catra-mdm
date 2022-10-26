@@ -1,29 +1,24 @@
 package com.agx.catra;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.agx.catra.common.Constants.RC_GET_DEVICE_ADMIN;
-import static com.agx.catra.common.Constants.SET_PASSWORD;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-import com.agx.catra.control.GainControlService;
+import com.agx.catra.control.AdminControlService;
 import com.agx.catra.workers.OwnPermissionsWorker;
+import com.agx.catra.workers.StartUpWorker;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "GainControlService";
+    private static final String TAG = "AdminControlService";
     private CheckBox checkBoxAdmin;
     private Button btn_grantPermission;
 
@@ -44,21 +39,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, GainControlService.class);
-        startService(intent);
+
+        StartUpWorker.start(getContext());
 
         setContentView(R.layout.activity_main);
         btn_grantPermission = (Button) findViewById(R.id.btn_grandPermission);
         btn_grantPermission.setOnClickListener(v -> {
-            WorkManager
-                    .getInstance(getContext())
-                    .enqueue(new OneTimeWorkRequest.Builder(OwnPermissionsWorker.class).build());
-
+            OwnPermissionsWorker.start(getContext());
         });
 
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0);
+
+    }
 
     public static AppCompatActivity getActivity() {
 
