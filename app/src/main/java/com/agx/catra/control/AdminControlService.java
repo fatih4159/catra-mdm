@@ -38,6 +38,9 @@ public class AdminControlService extends Service {
 	private static DevicePolicyManager mDpm;
 	private static ComponentName mAdminComponent;
 	private ArrayAdapter<PackageInfo> mListAdapter;
+	private static boolean admin;
+	private static boolean owner;
+
 
 	@Override
 	public void onCreate() {
@@ -59,15 +62,20 @@ public class AdminControlService extends Service {
 
 
 	public static void checkDeviceOwnership() {
-		// find out if we are the device owner
-		if(!mDpm.isDeviceOwnerApp(APPLICATION_ID)) {
+
+		owner = mDpm.isDeviceOwnerApp(APPLICATION_ID);
+		admin = mDpm.isAdminActive(mAdminComponent);
+
+
+
+		if(!owner) {
 			Log.d(TAG, "checkDeviceOwnership: we are not a device owner");
 			// find out if we can become the device owner
 			final Account[] accounts = AccountManager.get(getContext()).getAccounts();
 			if(accounts.length == 0) {
 				Log.d(TAG, "checkDeviceOwnership: we are device admin so we can become device owner");
 				// find out if we are a device administrator
-				if(mDpm.isAdminActive(mAdminComponent)) {
+				if(admin) {
 					// become the device owner
 					RunDpmDialog.show(getActivity());
 				}
@@ -101,5 +109,14 @@ public class AdminControlService extends Service {
 
 	public static ComponentName getComponentName(Context context) {
 		return new ComponentName(context.getApplicationContext(), AdminReceiver.class);
+	}
+
+
+	public static boolean isAdmin() {
+		return admin;
+	}
+
+	public static boolean isOwner() {
+		return owner;
 	}
 }

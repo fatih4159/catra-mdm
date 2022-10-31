@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:sharedUserId="android.uid.platform"
     package="com.agx.catra">
 
     <uses-permission android:name="android.permission.ACCESS_BLOBS_ACROSS_USERS"
@@ -295,6 +296,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
+        <receiver android:name=".common.autostarter.autostart"
+            android:exported="true"
+            tools:ignore="MissingClass">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:enabled="true" android:name=".common.autostarter.service" />
 
         <receiver
             android:name=".control.AdminReceiver"

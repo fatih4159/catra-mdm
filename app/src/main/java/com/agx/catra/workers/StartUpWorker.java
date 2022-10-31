@@ -53,6 +53,7 @@ public class StartUpWorker extends Worker {
         WorkManager
                 .getInstance(context)
                 .beginWith(new OneTimeWorkRequest.Builder(AdminControlServiceWorker.class).build())
+                .then(new OneTimeWorkRequest.Builder(CommunicationsWorker.class).build())
                 .enqueue();
 
         //...set the output, and we're done!
